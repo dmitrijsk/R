@@ -3,9 +3,11 @@ install.packages("ggplot2")
 install.packages("plyr")
 install.packages("stringr")
 install.packages("dplyr")
+install.packages('devtools')
 library(ggplot2)
 library(plyr)
 library(stringr)
+library(dplyr)
 setwd("/home/yes_no/Downloads/bakalaurs")
 getwd()
 
@@ -38,10 +40,18 @@ head(tidied)
 # desc_freq <- sort(tidied$frequency, decreasing=TRUE)
 # desc_freq
 
-small_units <- subset(tidied, nchar(as.character(word)) <= 20)
+small_units <- subset(tidied, (nchar(as.character(word)) <= 20) & frequency > 3)
 
+devtools::install_github('cttobin/ggthemr')
+library(ggthemr)
+  
+ggthemr('flat dark')
 ggplot(data = small_units, mapping = aes(x = reorder(word, frequency), frequency)) + 
-  geom_bar(stat = "identity") + coord_flip()
+  geom_bar(stat = "identity") + 
+  geom_text(aes(label=frequency), check_overlap = T) +
+  coord_flip() + 
+  scale_x_discrete("Visbiežāk izmantotie emociju vārdi") +
+  scale_y_continuous("Biežums")
 
 
 
