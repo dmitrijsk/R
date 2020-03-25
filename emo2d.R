@@ -8,6 +8,7 @@ library(ggplot2)
 library(plyr)
 library(stringr)
 library(dplyr)
+library(data.table)
 setwd("/home/yes_no/Downloads/bakalaurs")
 getwd()
 
@@ -42,7 +43,11 @@ names(no_punct_dim)[names(no_punct_dim)=="emo_words.valence"] <- "valence"
 names(no_punct_dim)[names(no_punct_dim)=="emo_words.activity"] <- "activity"
 
 
-wordfreq <- count(emo_words, "word") #vārdu biežumu kolonna
+# wordfreq <- count(emo_words, "word") #vārdu biežumu kolonna
+# wordreq1 <- count(no_punct_dim, "word")
+a <- table(no_punct_dim)
+freq <- as.data.frame(table(no_punct_dim$word))
+
 no_punctuation <- as.data.frame(gsub("[[:punct:]]", "", wordfreq$word)) #biežumu kolonna bez special symbols
 
 
@@ -52,16 +57,32 @@ names(tidied)[names(tidied)=="gsub.....punct..........wordfreq.q1."] <- "word"
 names(tidied)[names(tidied)=="wordfreq.freq"] <- "frequency"
 head(tidied)
 
-small_units <- subset(tidied, (nchar(as.character(word)) <= 20) & frequency > 4)
+small_units <- subset(freq, (nchar(as.character(Var1)) <= 20) & Freq > 3)
+
 
 devtools::install_github('cttobin/ggthemr')
 library(ggthemr)
   
 ggthemr('flat dark')
-ggplot(data = small_units, mapping = aes(x = reorder(word, frequency), frequency)) + 
+ggplot(data = small_units, mapping = aes(x = reorder(Var1, Freq), Freq)) + 
   geom_bar(stat = "identity") + 
-  geom_text(aes(label=frequency), check_overlap = T) +
+  geom_text(aes(label=Freq), check_overlap = T) +
   coord_flip() + 
   scale_x_discrete("Visbiežāk izmantotie emociju vārdi") +
   scale_y_continuous("Biežums")
+
+
+#ceļā uz lemmām
+head(no_punct_dim)
+no_punct_dim$word = gsub("u$|e$|a$|s$|i$", "", no_punct_dim$word) 
+no_punct_dim$word = gsub("es$", "", no_punct_dim$word) 
+no_punct_dim$word = gsub("ums", "", no_punct_dim$word)
+no_punct_dim$word = gsub("ība$", "", no_punct_dim$word) 
+no_punct_dim$word = gsub("iba$", "", no_punct_dim$word) 
+no_punct_dim$word = gsub("āts$", "", no_punct_dim$word) 
+no_punct_dim$word = gsub("oša$", "", no_punct_dim$word) 
+no_punct_dim$word = gsub("ošs$", "", no_punct_dim$word) 
+no_punct_dim$word = gsub("ās$", "", no_punct_dim$word) 
+no_punct_dim$word = gsub("āte$", "", no_punct_dim$word) 
+
 
