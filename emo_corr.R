@@ -104,25 +104,7 @@ paud_uapd <- data2 %>%
 
 paud_uapd
 
-# Example with rotation.
-ex_df <- tibble(data_point = "original",
-                x = 1, 
-                y = 0)
-rot_m <- matrix(c(cos(pi/4), -sin(pi/4), sin(pi/4), cos(pi/4)), byrow = TRUE, nrow = 2)
-ex_rot_m <- t(rot_m %*% t(as.matrix(ex_df[-1])))
-colnames(ex_rotation_m) <- c("x", "y")
-rownames(ex_rotation_m) <- "rotated"
-ex_rot_df <- as.data.frame(ex_rotation_m) %>% 
-  rownames_to_column(var = "data_point")
-bind_rows(ex_df, ex_rot_df) %>% 
-  ggplot(aes(x = x, y = y, colour = data_point)) + 
-  geom_point() + 
-  geom_vline(xintercept = 0) + 
-  geom_hline(yintercept = 0) +
-  coord_cartesian(xlim = c(-1, 1), y = c(-1, 1)) +
-  theme(legend.position = "top")
 
-# end of example with rotation.
 
 
 
